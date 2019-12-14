@@ -51,7 +51,7 @@ class IPFSAdd(Processor):
             return
         pkginfo = readPlist(self.env['pkginfo_repo_path'])
         # Generate arguments for makecatalogs.
-        args = ["/usr/local/bin/ipfs", "add", "--only-hash"]
+        args = ["/usr/local/bin/ipfs", "add", "-w", "--only-hash"]
         if self.env["pkg_repo_path"].startswith("/"):
             # looks a file path instead of a URL
             args.append(self.env["pkg_repo_path"])
@@ -68,7 +68,8 @@ class IPFSAdd(Processor):
                 % (err.errno, err.strerror)
             )
 
-        self.env["ipfs_cid"] = str(output).split(' ')[1]
+        # Get the wrapper CID for the item
+        self.env["ipfs_cid"] = str.splitlines(output)[1].split(' ')[1]
         self.env["ipfs_add_resultcode"] = proc.returncode
         self.env["ipfs_add_stderr"] = err_out.decode("utf-8")
         if proc.returncode != 0:
