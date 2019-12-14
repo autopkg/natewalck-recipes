@@ -1,0 +1,46 @@
+#!/bin/zsh
+
+IPFS_HOME="/var/ipfs"
+IPFS_REPO="$IPFS_HOME/.ipfs"
+
+launchd_load()
+{
+    # most likely it's loaded..
+    echo "Attempting to unload $1.."
+    /bin/launchctl unload "$1"
+    echo "Attempting to load $1.."
+    /bin/launchctl load "$1"
+}
+
+create_ipfs_user()
+{
+  # Create service account for ipfs, including a home in /var 
+  [ ! -d $IPFS_HOME ] && /bin/mkdir $IPFS_HOME
+  # sysadminctl is idempotent, so if it already exists, it won't try to create it
+  /usr/sbin/sysadminctl -addUser ipfs -shell /usr/bin/false -home $IPFS_HOME 
+  /bin/chmod 750 $IPFS_HOME
+  /usr/sbin/chown ipfs:wheel $IPFS_HOME
+}
+
+ipfs_init()
+{
+  # Only init if the repo doesn't already exist, otherwise we could lose data
+  [ ! -d $IPFS_REPO ] && sudo -H -u ipfs /usr/local/bin/ipfs init
+}
+
+# Create the ipfs service account
+create_ipfs_user
+
+# Initialize the repo
+ipfs_init
+
+# Borrowed from the autopkg autopkg recipe
+# load the LaunchDaemons only if we're installing to the currently-booted volume
+if [ "$3" = "/" ]; then
+    echo "Installation is to the currently-booted volume."
+    launchd_load "/Library/LaunchDaemons/ai.protocol.ipfs.plist"
+else
+    echo "Installation is to non-booted volume."
+fi
+
+exit 0
