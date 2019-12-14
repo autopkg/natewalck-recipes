@@ -12,7 +12,7 @@
 		<string>go-ipfs</string>
 	</dict>
 	<key>MinimumVersion</key>
-	<string>2.0</string>
+	<string>1.4</string>
 	<key>Process</key>
 	<array>
 		<dict>
