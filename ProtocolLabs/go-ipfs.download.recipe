@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest go-ipfs release</string>
+	<key>Identifier</key>
+	<string>com.github.natewalck.download.go-ipfs</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>go-ipfs</string>
+	</dict>
+	<key>MinimumVersion</key>
+	<string>2.0</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>URLTextSearcher</string>
+			<key>Arguments</key>
+			<dict>
+				<key>url</key>
+				<string>https://dist.ipfs.io</string>
+				<key>re_pattern</key>
+				<string>(?P&lt;url&gt;go-ipfs/v(.*)/go-ipfs_v(?P&lt;version&gt;[\d\.]+)\_darwin-amd64\.tar\.gz)</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>URLDownloader</string>
+			<key>Arguments</key>
+			<dict>
+				<key>url</key>
+				<string>https://dist.ipfs.io/%url%</string>
+				<key>filename</key>
+				<string>%NAME%-%version%_darwin-amd64.tar.gz</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>EndOfCheckPhase</string>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>URLTextSearcher</string>
+			<key>Arguments</key>
+			<dict>
+				<key>url</key>
+				<string>https://dist.ipfs.io/go-ipfs/v%version%/go-ipfs_v%version%_darwin-amd64.tar.gz.sha512</string>
+				<key>re_pattern</key>
+				<string>(?P&lt;checksum&gt;\w+)</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>io.github.hjuutilainen.SharedProcessors/ChecksumVerifier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>algorithm</key>
+				<string>SHA512</string>
+				<key>checksum</key>
+				<string>%checksum%</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>
