@@ -1,0 +1,34 @@
+Description: |
+  A Python 3 framework that currently installs to /Library/ManagedFrameworks/Python/Python3.framework.
+  Please see Apple's documentation on file system basics for more information on the thought process here.
+  This is an intended replacement for when Apple removes /usr/bin/python"
+Identifier: com.github.natewalck.download.MacAdminsPython
+MinimumVersion: 2.3.0
+
+Input:
+  NAME: MacAdminsPython
+  PRERELEASE: 'True'
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    asset_regex: python_recommended_signed-\S.*?.pkg
+    github_repo: macadmins/python
+    include_prereleases: '%PRERELEASE%'
+    sort_by_highest_tag_names: 'True'
+
+- Processor: URLDownloader
+  Arguments:
+    filename: '%NAME%.pkg'
+
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    expected_authority_names:
+    - 'Developer ID Installer: Clever DevOps Co. (9GQZ7KUFR6)'
+    - Developer ID Certification Authority
+    - Apple Root CA
+    input_path: '%pathname%'
+    requirement: identifier "com.github.macadmins.Python"
+    strict_verification: true
