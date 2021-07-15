@@ -1,16 +1,16 @@
-Description: Downloads latest MacAdmins Python release and imports into Munki.
-Identifier: com.github.natewalck.munki.MacAdminsPython
-ParentRecipe: com.github.natewalck.download.MacAdminsPython
+Description: Downloads latest Macadmins Python release and imports into Munki.
+Identifier: com.github.natewalck.munki.MacadminsPython
+ParentRecipe: com.github.jazzace.download.MacadminsPython
 MinimumVersion: 2.3.0
 
 Input:
-  NAME: MacAdminsPython
-  MUNKI_REPO_SUBDIR: apps/MacAdminsPython
+  NAME: MacadminsPython
+  MUNKI_REPO_SUBDIR: apps/MacadminsPython
   pkginfo:
     catalogs:
     - testing
     category: Configuration Management
-    description: MacAdminsPython is a relocatable distribution of Python for Mac Admins
+    description: MacadminsPython is a relocatable distribution of Python for Mac Admins
     developer: Erik Gomez
     display_name: Mac Admins Python
     name: '%NAME%'
